@@ -1,0 +1,174 @@
+#root {
+    display: flex;
+    --main-color: rgb(255, 145, 77);
+}
+
+#root .main {
+    flex: 1;
+    padding-top: 72px;
+    padding-bottom: 72px;
+    background-color: #101113;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+@font-face {
+    font-family: "holtwood";
+    src: url("./assets/fonts/holtwood-one-sc.regular.ttf");
+}
+@font-face {
+    font-family: "ibm";
+    src: url("./assets/fonts/ibm-plex-mono.regular.ttf");
+}
+@font-face {
+    font-family: "outfit";
+    src: url("./assets/fonts/outfit-regular.ttf");
+}
+@font-face {
+    font-family: "silkscreen";
+    src: url("./assets/fonts/Silkscreen-Regular.ttf");
+}
+.font-holtwood {
+    font-family: "holtwood";
+}
+.font-ibm {
+    font-family: "ibm";
+}
+.font-outfit {
+    font-family: "outfit";
+}
+.font-silkscreen {
+    font-family: "silkscreen";
+}
+
+.main-color {
+    color: var(--main-color);
+}
+.ml-2 {
+    margin-left: 16px;
+}
+.mr-2 {
+    margin-right: 16px;
+}
+.mb-2 {
+    margin-bottom: 16px;
+}
+.mt-2 {
+    margin-top: 16px;
+}
+.mr-1 {
+    margin-right: 8px;
+}
+.ml-1 {
+    margin-left: 8px;
+}
+.mt-1 {
+    margin-top: 8px;
+}
+.mb-1 {
+    margin-bottom: 8px;
+}
+.mb-4 {
+    margin-bottom: 32px;
+}
+.cursor-pointer {
+    cursor: pointer;
+}
+.py-4 {
+    padding-top: 24px;
+    padding-bottom: 24px;
+}
+.py-2 {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+.pr-2 {
+  padding-right: 8px;
+}
+.main-container {
+    height: 600px;
+    width: 360px;
+    margin: 0 auto;
+    margin-top: 100px;
+    position: relative;
+}
+.mt-50 {
+    margin-top: 50px;
+}
+.img-wrapper {
+    height: 40px;
+    width: 40px;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+}
+.img-wrapper > img {
+    width: 36px;
+}
+.token-item:hover {
+    opacity: 0.8;
+}
+.overflow {
+    overflow: auto;
+}
+
+/* .scroll {
+    --sb-track-color: #232e33;
+    --sb-thumb-color: #6baf8d;
+    --sb-size: 2px;
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+}
+
+.scroll::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
+
+.scroll::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+    border-radius: 10px;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-color);
+    border-radius: 10px;
+} */
+.transfer-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background-color: #1F1F1F;
+}
+
+.mantine-InputWrapper-label {
+  width: 100%;
+}
+/* 整个滚动条 */
+::-webkit-scrollbar {
+  /* 对应纵向滚动条的宽度 */
+  width: 2px;
+  /* 对应横向滚动条的宽度 */
+  height: 2px;
+}
+
+/* 滚动条上的滚动滑块 */
+::-webkit-scrollbar-thumb {
+  background-color: #868E96;
+  border-radius: 32px;
+}
+
+/* 滚动条轨道 */
+::-webkit-scrollbar-track {
+  background-color: #1f1f1f;
+  border-radius: 32px;
+}
+
+.transfer-wrapper {
+  overflow: auto;
+  padding-right: 8px;
+}
