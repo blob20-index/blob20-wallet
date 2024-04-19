@@ -10,7 +10,8 @@ export default function Create() {
     const ctx = useContext(globalContext)
     const [value, setValue] = useState("")
     const onCreate = () => {
-        const address = getAddressFromPk(value)
+        const pk = value.startsWith('0x') ? value.replace('0x','') : value
+        const address = getAddressFromPk(pk)
         if (address) {
             encryptPrivateKey(value)
             notifications.show({

@@ -4,7 +4,8 @@ import { createWalletClient, http, toBlobs, parseGwei, stringToHex, createPublic
 import { privateKeyToAccount } from "viem/accounts"
 import { mainnet } from "viem/chains"
 import { decryptPrivateKey } from "./index"
-import { Chain, Common, Hardfork } from '@ethereumjs/common'
+import { Chain, Common, Hardfork } from "@ethereumjs/common"
+import { getTxInfo } from "../apis"
 
 function transferToken(ticker, transfers) {
     return {
@@ -16,29 +17,40 @@ function transferToken(ticker, transfers) {
         },
     }
 }
-// const ticker = "blob" //需要转账的token
-// const transfer = [
-//     {
-//         to_address: "这里填写接收的钱包地址 0x...", //设置接收钱包地址
-//         amount: "1000", //转账数量
-//     },
-// ]
-export const beforeTransfer = async (ticker,transfer) => {
 
+export const checkTxStatus = (tx) => {
+    let timer
+    let sec = 0
+    return new Promise((resolve, reject) => {
+        timer = setInterval(() => {
+            getTxInfo({ tx }).then((res) => {
+                if (res) {
+                    if (res[0]?.status === "success") {
+                        resolve()
+                    } else {
+                        reject({
+                            message: "Something wrong",
+                        })
+                    }
+                    clearInterval(timer)
+                } else if (sec >= 20) {
+                    reject({
+                        message: "Time out",
+                    })
+                    clearInterval(timer)
+                } else {
+                    sec += 2
+                }
+            })
+        }, 2000)
+    })
 }
-const transferBlob = async (ticker, transfer,
-    maxFeePerGas, maxPriorityFeePerGas, maxFeePerBlobGas, nonce
-) => {
+const transferBlob = async (ticker, transfer, maxFeePerGas, maxPriorityFeePerGas, maxFeePerBlobGas, nonce) => {
     const pk = decryptPrivateKey()
     if (!pk) {
         return
     }
-    const account = privateKeyToAccount(pk.startsWith('0x') ? pk : ('0x' + pk))
-    const client = createWalletClient({
-        account,
-        chain: mainnet,
-        transport: http("https://1rpc.io/eth"),
-    })
+    const account = privateKeyToAccount('0x' + pk)
     const transfer_json = JSON.stringify(transferToken(ticker, transfer))
     const blob20blobscription = cbor.encode({
         contentType: "application/json",
@@ -48,12 +60,12 @@ const transferBlob = async (ticker, transfer,
     const kzg = await loadKZG()
     const publicClient = createPublicClient({
         chain: mainnet,
-        transport: http()
+        transport: http(),
     })
     const fees = await publicClient.estimateFeesPerGas()
-    const getMaxPriorityFeePerGas = fees => {
+    const getMaxPriorityFeePerGas = (fees) => {
         const A = fees.maxPriorityFeePerGas * 2n
-        const R = parseGwei("1");
+        const R = parseGwei("1")
         return A > R ? A : R
     }
     const getMaxFeePerGas = (fees) => {
@@ -69,16 +81,13 @@ const transferBlob = async (ticker, transfer,
         const $S = BigInt(1)
         const block = await publicClient.getBlock()
         const K$ = (e, t, n) => {
-            let r = $S
-                , i = Wn
-                , o = e * n;
-            for (; o > Wn;)
-                i += o,
-                    o = o * t / (n * r),
-                    r++;
+            let r = $S,
+                i = Wn,
+                o = e * n
+            for (; o > Wn; ) (i += o), (o = (o * t) / (n * r)), r++
             return i / n
         }
-        const K = K$(common.param("gasPrices", "minBlobGasPrice"), block.excessBlobGas, common.param("gasConfig", "blobGasPriceUpdateFraction"));
+        const K = K$(common.param("gasPrices", "minBlobGasPrice"), block.excessBlobGas, common.param("gasConfig", "blobGasPriceUpdateFraction"))
         const A = K * 2n
         const R = parseGwei("10")
         return A > R ? A : R
@@ -101,17 +110,18 @@ const transferBlob = async (ticker, transfer,
         data: stringToHex("data:;rule=esip6,"),
         value: 0n,
         type: "eip4844",
-        maxFeePerGas: maxFeePerGas ? parseGwei(maxFeePerGas + '') : defaultMaxFeePerGas,
-        maxPriorityFeePerGas: maxPriorityFeePerGas ? parseGwei(maxPriorityFeePerGas + '') : defaultMaxPriorityFeePerGas,
-        maxFeePerBlobGas: maxFeePerBlobGas ? parseGwei(maxFeePerBlobGas + '') : defaultMaxFeePerBlobGas,
-        nonce: nonce ? (nonce + '') :  defaultNonce
+        maxFeePerGas: maxFeePerGas ? parseGwei(maxFeePerGas + "") : defaultMaxFeePerGas,
+        maxPriorityFeePerGas: maxPriorityFeePerGas ? parseGwei(maxPriorityFeePerGas + "") : defaultMaxPriorityFeePerGas,
+        maxFeePerBlobGas: maxFeePerBlobGas ? parseGwei(maxFeePerBlobGas + "") : defaultMaxFeePerBlobGas,
+        nonce: nonce ? nonce + "" : defaultNonce,
     }
     console.log(params)
-    if(window.location.search === '?dev=1') {
+    if (window.location.search === "?dev=1") {
         return
     }
     const hash = await client.sendTransaction(params)
     console.log("tx hash:", hash)
+    await checkTxStatus(hash)
     return hash
 }
 

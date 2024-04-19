@@ -39,7 +39,7 @@ export const setLocalStoarge = (key,value) => {
 export const getLocalStoarge = (key,defaultValue) => {
     const json = localStorage.getItem(key)
     try {
-        return JSON.parse(json)
+        return json ? JSON.parse(json) : defaultValue
     } catch (error) {
         return defaultValue
     }
