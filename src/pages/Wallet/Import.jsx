@@ -15,7 +15,7 @@ export default function Create() {
             encryptPrivateKey(value)
             notifications.show({
                 title: "Success",
-                message: "You have successfully created a wallet!",
+                message: "You have successfully imported a wallet!",
                 color: "green",
             })
             ctx.setAccount({

@@ -23,9 +23,11 @@ function transferToken(ticker, transfers) {
 //         amount: "1000", //转账数量
 //     },
 // ]
+export const beforeTransfer = async (ticker,transfer) => {
 
+}
 const transferBlob = async (ticker, transfer,
-    // maxFeePerGas, maxPriorityFeePerGas, maxFeePerBlobGas, nonce
+    maxFeePerGas, maxPriorityFeePerGas, maxFeePerBlobGas, nonce
 ) => {
     const pk = decryptPrivateKey()
     if (!pk) {
@@ -87,11 +89,11 @@ const transferBlob = async (ticker, transfer,
         })
         return transactionCount
     }
-    const maxFeePerGas = getMaxFeePerGas(fees)
-    const maxPriorityFeePerGas = getMaxPriorityFeePerGas(fees)
-    const maxFeePerBlobGas = await getMaxFeePerBlobGas()
-    const nonce = await getNonce()
-    const hash = await client.sendTransaction({
+    const defaultMaxFeePerGas = getMaxFeePerGas(fees)
+    const defaultMaxPriorityFeePerGas = getMaxPriorityFeePerGas(fees)
+    const defaultMaxFeePerBlobGas = await getMaxFeePerBlobGas()
+    const defaultNonce = await getNonce()
+    const params = {
         kzg,
         blobs,
         account,
@@ -99,16 +101,13 @@ const transferBlob = async (ticker, transfer,
         data: stringToHex("data:;rule=esip6,"),
         value: 0n,
         type: "eip4844",
-        maxFeePerGas,
-        maxPriorityFeePerGas,
-        maxFeePerBlobGas,
-        // maxFeePerGas: parseGwei(14 + ""), //主网gas费
-        // maxPriorityFeePerGas: parseGwei(1 + ""), //主网矿工小费
-        // maxFeePerBlobGas: parseGwei(1 + ""), //设置Blob链上gas
-        // nonce,
-    })
-    console.log("Blob转账完成，等待链上打包确认!")
-    console.log("转账hash:", hash)
+        maxFeePerGas: maxFeePerGas ? parseGwei(maxFeePerGas + '') : defaultMaxFeePerGas,
+        maxPriorityFeePerGas: maxPriorityFeePerGas ? parseGwei(maxPriorityFeePerGas + '') : defaultMaxPriorityFeePerGas,
+        maxFeePerBlobGas: maxFeePerBlobGas ? parseGwei(maxFeePerBlobGas + '') : defaultMaxFeePerBlobGas,
+        nonce: nonce ? (nonce + '') :  defaultNonce
+    }
+    const hash = await client.sendTransaction(params)
+    console.log("tx hash:", hash)
     return hash
 }
 

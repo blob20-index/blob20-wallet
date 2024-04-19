@@ -1,5 +1,5 @@
 import axios from "axios"
-const BASEURL = 'http://blob20.art/api'
+const BASEURL = 'https://blob20.art/api'
 
 export const getAccountInfo = async (params) => {
     const res = await axios.get(BASEURL + '/getAccounts',{params})

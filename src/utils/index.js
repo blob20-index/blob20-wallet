@@ -13,7 +13,7 @@ export const displayAddress = (str, position = -6) => {
     }
 }
 
-export const formatNumber = (num) => (num ? (num > 1 ? num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") : num) : "")
+export const formatNumber = (num) => new Intl.NumberFormat('en-us').format(num)
 
 export const toRound = (num, n = 4) => {
     const val = Number(num)
@@ -66,4 +66,19 @@ export const getEthBalance = async (walletAddress) => {
     const balance = await provider.getBalance(walletAddress)
     const etherBalance = ethers.utils.formatEther(balance)
     return toRound(+etherBalance)
+}
+
+export const validAddress = async (address) => {
+    if(address.endsWith('.eth')) {
+        const rpcUrl = "https://rpc.flashbots.net"
+        const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
+        try {
+            const res = await provider.resolveName(address)
+            return res || ''
+        } catch (error) {
+            return ''
+        }
+    }else {
+        return ethers.utils.isAddress(address) ? address : '';
+    }
 }

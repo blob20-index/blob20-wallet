@@ -10,9 +10,10 @@ import Home from "./pages/Home/index.jsx"
 import Wallet from "./pages/Wallet/index.jsx"
 import Create from "./pages/Wallet/Create.jsx"
 import Import from "./pages/Wallet/Import.jsx"
+import Export from "./pages/Wallet/Export.jsx"
 import Profile from "./pages/Profile/index.jsx"
 import Transfer from "./pages/Transfer/index.jsx"
-import TransferToken from "./pages/Transfer/token.jsx"
+import TransferToken from "./pages/Transfer/[token].jsx"
 import useGetAccount from './hooks/useGetAccount.js'
 
 export const globalContext = createContext({})
@@ -30,6 +31,7 @@ function App() {
                             <Route path="/wallet" element={<Wallet />} />
                             <Route path="/wallet/create" element={<Create />} />
                             <Route path="/wallet/import" element={<Import />} />
+                            <Route path="/wallet/export" element={<Export />} />
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/transfer" element={<Transfer />} />
                             <Route path="/transfer/:token" element={<TransferToken />} />

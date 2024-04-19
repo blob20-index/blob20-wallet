@@ -1,6 +1,6 @@
 import { Input, Title, Text, Flex, Button, Divider, ActionIcon, CloseButton } from "@mantine/core"
 
-const TransferItem = ({ address, amount, showClose, onClose, setAddress, setAmount, token, setMax ,index}) => {
+const TransferItem = ({ address, amount, showClose, onClose, setAddress, setAmount, token, setMax ,index, addressError,amountError}) => {
     return (
         <div className="py-2">
             <Input.Wrapper
@@ -10,11 +10,13 @@ const TransferItem = ({ address, amount, showClose, onClose, setAddress, setAmou
                         {showClose && <CloseButton c="red" onClick={onClose}></CloseButton>}
                     </Flex>
                 }
+                error={addressError}
               >
                 <Input placeholder="Enter public address(0x) or ENS name" value={address} onChange={(e) => setAddress(e.target.value)} />
             </Input.Wrapper>
             <Input.Wrapper
                 className="mt-2 mb-2"
+                error={amountError}
                 label={
                     <Flex align="center" justify="space-between">
                         Amount
