@@ -19,7 +19,7 @@ export default function Transfer() {
                 <br />
             </Title>
             <Divider></Divider>
-            <TokenList address={ctx.account.address} hideNaviteToken onClick={onTokenItemClick}></TokenList>
+            <TokenList address={ctx.account.address} hideNativeToken onClick={onTokenItemClick}></TokenList>
             <Flex className="transfer-footer">
                 <Button variant="light" fullWidth onClick={() => nav("/")}>
                     Cancel

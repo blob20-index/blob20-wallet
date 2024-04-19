@@ -33,13 +33,26 @@ export const getAddressFromPk = (pk) => {
     }
 }
 
+export const setLocalStoarge = (key,value) => {
+    localStorage.setItem(key,JSON.stringify(value))
+}
+export const getLocalStoarge = (key,defaultValue) => {
+    const json = localStorage.getItem(key)
+    try {
+        return JSON.parse(json)
+    } catch (error) {
+        return defaultValue
+    }
+}
 export function encryptPrivateKey(pk) {
     try {
         const key = getAddressFromPk(pk)
         if(key) {
             const encryptedData = CryptoJS.AES.encrypt(pk, key).toString()
-            localStorage.setItem("__PK__", encryptedData)
-            localStorage.setItem("__ADDRESS__", key)
+            const pks = getLocalStoarge('__PK__',{})
+            pks[key] = encryptedData
+            setLocalStoarge('__PK__',pks)
+            localStorage.setItem("__CURRENT_ADDRESS__", key)
             return encryptedData
         }else {
             return ''
@@ -49,10 +62,11 @@ export function encryptPrivateKey(pk) {
     }
 }
 
-export function decryptPrivateKey() {
+export function decryptPrivateKey(currentAddress) {
     try {
-        const encryptedData = localStorage.getItem("__PK__")
-        const key = localStorage.getItem("__ADDRESS__")
+        const json = getLocalStoarge("__PK__",{})
+        const key = currentAddress || localStorage.getItem("__CURRENT_ADDRESS__")
+        const encryptedData = json[key]
         const decryptedData = CryptoJS.AES.decrypt(encryptedData, key).toString(CryptoJS.enc.Utf8)
         return decryptedData
     } catch (error) {

@@ -33,7 +33,7 @@ const transferBlob = async (ticker, transfer,
     if (!pk) {
         return
     }
-    const account = privateKeyToAccount('0x' + pk)
+    const account = privateKeyToAccount(pk.startsWith('0x') ? pk : ('0x' + pk))
     const client = createWalletClient({
         account,
         chain: mainnet,
@@ -105,6 +105,10 @@ const transferBlob = async (ticker, transfer,
         maxPriorityFeePerGas: maxPriorityFeePerGas ? parseGwei(maxPriorityFeePerGas + '') : defaultMaxPriorityFeePerGas,
         maxFeePerBlobGas: maxFeePerBlobGas ? parseGwei(maxFeePerBlobGas + '') : defaultMaxFeePerBlobGas,
         nonce: nonce ? (nonce + '') :  defaultNonce
+    }
+    console.log(params)
+    if(window.location.search === '?dev=1') {
+        return
     }
     const hash = await client.sendTransaction(params)
     console.log("tx hash:", hash)

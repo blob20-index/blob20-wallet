@@ -1,33 +1,48 @@
 import { useState, useContext, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { globalContext } from "../../App"
-import { Flex, Text, Divider, Button, Menu, ActionIcon } from "@mantine/core"
+import { Flex, Text, Divider, Button, Menu, ActionIcon, Select } from "@mantine/core"
 import Copy from "../../components/Copy"
 import TokenList from "../../components/TokenList"
-import { displayAddress, formatNumber, encryptPrivateKey, toRound } from "../../utils"
+import { displayAddress, formatNumber, getLocalStoarge, toRound } from "../../utils"
 import { IconSend, IconSettings2 } from "@tabler/icons-react"
 import WalletPage from "../Wallet/index"
-import { IconFileExport } from "@tabler/icons-react"
+import { IconFileExport, IconFilePlus } from "@tabler/icons-react"
+
 
 export default function Home() {
     const ctx = useContext(globalContext)
     const nav = useNavigate()
     const [total, setTotal] = useState(0)
-    // useEffect(() => {
-    //     if (!ctx.account.address) {
-    //         nav("/wallet")
-    //     }
-    // }, [ctx.account])
+    const [wallets, setWallets] = useState([])
+
+    const [currAddr, setCurrAddr] = useState(ctx.account.address)
+    useEffect(() => {
+        const pks = getLocalStoarge("__PK__", {})
+        setWallets(Object.keys(pks).map(v => ({
+            value: v,
+            label: displayAddress(v,[4,-4])
+        })))
+    }, [])
     const onTokenItemClick = (item) => {
         console.log(item)
     }
     const setBalance = ({ blobs, eth, ethPrice }) => {
         setTotal(toRound(eth * ethPrice))
     }
+    const onChange = value => {
+        setCurrAddr(value)
+        ctx.setAccount({
+            address: value
+        })
+        setTotal(0)
+
+        localStorage.setItem("__CURRENT_ADDRESS__", value)
+    }
     return ctx.account.address ? (
         <>
             <Flex justify="space-between" align="center">
-                <Text>{displayAddress(ctx.account.address, [6, -6])}</Text>
+                <Select  data={wallets} value={currAddr}  onChange={onChange} />
                 <Flex>
                     <Copy value={ctx.account.address}></Copy>
                     <Menu shadow="md" position="bottom-end" withArrow>
@@ -37,7 +52,12 @@ export default function Home() {
                             </ActionIcon>
                         </Menu.Target>
                         <Menu.Dropdown>
-                            <Menu.Item leftSection={<IconFileExport />} onClick={() => nav('/wallet/export')}>Export Wallet</Menu.Item>
+                            <Menu.Item leftSection={<IconFileExport />} onClick={() => nav("/wallet/export")}>
+                                Export Wallet
+                            </Menu.Item>
+                            <Menu.Item leftSection={<IconFilePlus />} onClick={() => nav("/wallet")}>
+                                Add Account
+                            </Menu.Item>
                         </Menu.Dropdown>
                     </Menu>
                 </Flex>
@@ -52,7 +72,7 @@ export default function Home() {
                 </Button>
             </div>
             <Divider></Divider>
-            <TokenList address={ctx.account.address} onClick={onTokenItemClick} setBalance={setBalance}></TokenList>
+            <TokenList address={ctx.account.address} onClick={onTokenItemClick} setBalance={setBalance} ></TokenList>
         </>
     ) : (
         <WalletPage></WalletPage>

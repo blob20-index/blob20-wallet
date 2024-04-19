@@ -1,4 +1,4 @@
-import { Button, Text, Textarea, Title, Input } from "@mantine/core"
+import { Button, Text, Textarea, Title, Input, Alert } from "@mantine/core"
 import { useNavigate } from "react-router-dom"
 import { notifications } from "@mantine/notifications"
 import { useContext, useEffect, useState } from "react"
@@ -7,6 +7,7 @@ import { ethers } from "ethers"
 import { encryptPrivateKey } from "../../utils"
 import { useDisclosure } from "@mantine/hooks"
 import { Modal } from "@mantine/core"
+import { IconInfoCircle } from "@tabler/icons-react"
 
 export default function Create() {
     const nav = useNavigate()
@@ -48,13 +49,17 @@ export default function Create() {
             </Input.Wrapper>
 
             <Textarea label="Private Key" readOnly minRows={4} value={value}></Textarea>
-
+            <Alert variant="light" color="red" title="Warning" icon={<IconInfoCircle />} className="mt-2">
+                Never disclose this key. Anyone with your private keys can steal any assets held in your account.
+            </Alert>
             <Button fullWidth onClick={open} className="mt-2">
                 Setup Wallet
             </Button>
             <Modal opened={opened} onClose={close} title="Save your private key" centered>
                 <Title order={3}>This private key is used to recover your wallet so keep it at safe place.</Title>
-                <Button fullWidth className="mt-2" onClick={onCreate}>Confirm</Button>
+                <Button fullWidth className="mt-2" onClick={onCreate}>
+                    Confirm
+                </Button>
             </Modal>
         </>
     )

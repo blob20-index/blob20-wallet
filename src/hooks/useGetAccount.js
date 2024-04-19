@@ -3,7 +3,7 @@ import { decryptPrivateKey, getAddressFromPk } from "../utils"
 
 const useGetAccount = () => {
     const [account, setAccount] = useState({
-        address: localStorage.getItem('__ADDRESS__') || '',
+        address: localStorage.getItem('__CURRENT_ADDRESS__') || '',
     })
 
     useEffect(() => {
