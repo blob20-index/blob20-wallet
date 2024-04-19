@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useState, useRef } from "react"
 import TransferItem from "../../components/TransferItem"
 import transferBlob from "../../utils/transfer"
+import { notifications } from "@mantine/notifications"
 
 export default function Transfer() {
     const nav = useNavigate()
@@ -11,7 +12,17 @@ export default function Transfer() {
     const [list, setList] = useState([{ address: "", amount: "" }])
     const token = params.token
     const wrapperRef = useRef(null)
-
+    const doTransfer = async () => {
+        const hash = await transferBlob(token, list.map(v => ({
+            to: v.address,
+            amount: v.amount
+        })))
+        notifications.show({
+            title: "Success",
+            message: 'https://etherscan.io/tx/' + hash,
+            color: "green",
+        })
+    }
     return (
         <>
             <Title order={1} ta="center" c="white">
@@ -56,7 +67,7 @@ export default function Transfer() {
                                     return temp
                                 })
                             }}
-                            setMax={() => {}}></TransferItem>
+                            setMax={() => { }}></TransferItem>
                     ))}
                 </div>
                 {token === "ETH" ? null : (
@@ -83,13 +94,7 @@ export default function Transfer() {
             <Flex className="transfer-footer">
                 <Button
                     fullWidth
-                    onClick={() => {
-                        console.log(list)
-                        transferBlob(token,list.map(v => ({
-                            to_address: v.address,
-                            amount: v.amount
-                        })))
-                    }}>
+                    onClick={doTransfer}>
                     Confirm
                 </Button>
                 <Button variant="light" className=" ml-2" onClick={() => nav("/")}>
