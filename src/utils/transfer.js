@@ -50,7 +50,7 @@ const transferBlob = async (ticker, transfer, maxFeePerGas, maxPriorityFeePerGas
     if (!pk) {
         return
     }
-    const account = privateKeyToAccount('0x' + pk)
+    const account = privateKeyToAccount(pk.startsWith('0x') ? pk : ('0x' + pk))
     const transfer_json = JSON.stringify(transferToken(ticker, transfer))
     const blob20blobscription = cbor.encode({
         contentType: "application/json",
@@ -119,6 +119,11 @@ const transferBlob = async (ticker, transfer, maxFeePerGas, maxPriorityFeePerGas
     if (window.location.search === "?dev=1") {
         return
     }
+    const client = createWalletClient({
+        account,
+        chain: mainnet,
+        transport: http("https://1rpc.io/eth"),
+    })
     const hash = await client.sendTransaction(params)
     console.log("tx hash:", hash)
     await checkTxStatus(hash)

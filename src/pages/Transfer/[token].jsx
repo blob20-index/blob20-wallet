@@ -74,6 +74,7 @@ export default function Transfer() {
             }
         } catch (error) {
             setLoading(false)
+            console.error(error)
             notifications.show({
                 title: "Failed",
                 message: error.message,
