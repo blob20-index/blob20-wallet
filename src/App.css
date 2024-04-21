@@ -107,6 +107,8 @@
 }
 .img-wrapper > img {
     width: 36px;
+    height: 36px;
+    border-radius: 18px;
 }
 .token-item:hover {
     opacity: 0.8;
