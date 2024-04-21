@@ -59,7 +59,12 @@ export default function Transfer() {
             if (hash) {
                 notifications.show({
                     title: "Success",
-                    message: <a href={"https://etherscan.io/tx/" + hash} target="_blank">{"https://etherscan.io/tx/" + hash}</a>,
+                    message: (
+                        <div>
+                            Transfer submitted, please wait for the index synchronization to complete. <br />
+                            <a href={"https://etherscan.io/tx/" + hash} target="_blank">Check tx here.</a>
+                        </div>
+                    ),
                     color: "green",
                     autoClose: false
                 })

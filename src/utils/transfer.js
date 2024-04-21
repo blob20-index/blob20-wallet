@@ -126,7 +126,7 @@ const transferBlob = async (ticker, transfer, maxFeePerGas, maxPriorityFeePerGas
     })
     const hash = await client.sendTransaction(params)
     console.log("tx hash:", hash)
-    await checkTxStatus(hash)
+    // await checkTxStatus(hash)
     return hash
 }
 
