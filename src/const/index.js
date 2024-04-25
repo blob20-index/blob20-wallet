@@ -1,0 +1,1 @@
+export const RPC = 'https://rpc.ankr.com/eth'

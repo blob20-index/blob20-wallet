@@ -6,6 +6,7 @@ import { mainnet } from "viem/chains"
 import { decryptPrivateKey } from "./index"
 import { Chain, Common, Hardfork } from "@ethereumjs/common"
 import { getTxInfo } from "../apis"
+import { RPC } from '../const/index'
 
 function transferToken(ticker, transfers) {
     return {
@@ -122,7 +123,7 @@ const transferBlob = async (ticker, transfer, maxFeePerGas, maxPriorityFeePerGas
     const client = createWalletClient({
         account,
         chain: mainnet,
-        transport: http("https://1rpc.io/eth"),
+        transport: http(RPC),
     })
     const hash = await client.sendTransaction(params)
     console.log("tx hash:", hash)

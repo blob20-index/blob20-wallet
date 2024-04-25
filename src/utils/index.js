@@ -1,5 +1,6 @@
 import { ethers } from "ethers"
 import CryptoJS from "crypto-js"
+import { RPC } from '../const/index'
 
 export const displayAddress = (str, position = -6) => {
     if (!str) {
@@ -75,8 +76,7 @@ export function decryptPrivateKey(currentAddress) {
 }
 
 export const getEthBalance = async (walletAddress) => {
-    const rpcUrl = "https://rpc.flashbots.net"
-    const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
+    const provider = new ethers.providers.JsonRpcProvider(RPC)
     const balance = await provider.getBalance(walletAddress)
     const etherBalance = ethers.utils.formatEther(balance)
     return toRound(+etherBalance)
@@ -84,8 +84,7 @@ export const getEthBalance = async (walletAddress) => {
 
 export const validAddress = async (address) => {
     if(address.endsWith('.eth')) {
-        const rpcUrl = "https://rpc.flashbots.net"
-        const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
+        const provider = new ethers.providers.JsonRpcProvider(RPC)
         try {
             const res = await provider.resolveName(address)
             return res || ''
