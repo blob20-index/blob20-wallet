@@ -1,13 +1,43 @@
 import { loadKZG } from "kzg-wasm"
 import * as cbor from "borc"
-import { createWalletClient, http, toBlobs, parseGwei, stringToHex, createPublicClient } from "viem"
+import { createWalletClient, defineChain, http, toBlobs, parseGwei, stringToHex, createPublicClient } from "viem"
 import { privateKeyToAccount } from "viem/accounts"
 import { mainnet } from "viem/chains"
 import { decryptPrivateKey } from "./index"
 import { Chain, Common, Hardfork } from "@ethereumjs/common"
 import { getTxInfo } from "../apis"
-import { RPC } from '../const/index'
+import { RPC } from "../const/index"
 
+export const eth_mainnet = defineChain({
+    id: 1,
+    name: "Ethereum",
+    nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+    rpcUrls: {
+        default: {
+            http: [RPC],
+        },
+    },
+    blockExplorers: {
+        default: {
+            name: "Etherscan",
+            url: "https://etherscan.io",
+            apiUrl: "https://api.etherscan.io/api",
+        },
+    },
+    contracts: {
+        ensRegistry: {
+            address: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+        },
+        ensUniversalResolver: {
+            address: "0xce01f8eee7E479C928F8919abD53E553a36CeF67",
+            blockCreated: 19_258_213,
+        },
+        multicall3: {
+            address: "0xca11bde05977b3631167028862be2a173976ca11",
+            blockCreated: 14_353_601,
+        },
+    },
+})
 function transferToken(ticker, transfers) {
     return {
         protocol: "blob20",
@@ -51,7 +81,7 @@ const transferBlob = async (ticker, transfer, maxFeePerGas, maxPriorityFeePerGas
     if (!pk) {
         return
     }
-    const account = privateKeyToAccount(pk.startsWith('0x') ? pk : ('0x' + pk))
+    const account = privateKeyToAccount(pk.startsWith("0x") ? pk : "0x" + pk)
     const transfer_json = JSON.stringify(transferToken(ticker, transfer))
     const blob20blobscription = cbor.encode({
         contentType: "application/json",
@@ -60,7 +90,7 @@ const transferBlob = async (ticker, transfer, maxFeePerGas, maxPriorityFeePerGas
     const blobs = toBlobs({ data: blob20blobscription })
     const kzg = await loadKZG()
     const publicClient = createPublicClient({
-        chain: mainnet,
+        chain: eth_mainnet,
         transport: http(),
     })
     const fees = await publicClient.estimateFeesPerGas()
@@ -122,7 +152,7 @@ const transferBlob = async (ticker, transfer, maxFeePerGas, maxPriorityFeePerGas
     }
     const client = createWalletClient({
         account,
-        chain: mainnet,
+        chain: eth_mainnet,
         transport: http(RPC),
     })
     const hash = await client.sendTransaction(params)
